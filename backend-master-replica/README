@@ -55,3 +55,25 @@ POST → Master DB
 ✔ Case 2 Summary
 Scalable reads
 DB separation
+
+#To check data stored in read replica 
+
+Connect to Master endpoint
+database-1.ccvmq8qg23uo.us-east-1.rds.amazonaws.com
+
+Run:
+
+SELECT * FROM employees;
+
+You saw the employee records.
+
+Connect to Replica endpoint
+reader.ccvmq8qg23uo.us-east-1.rds.amazonaws.com
+
+Run the same query:
+
+SELECT * FROM employees;
+
+You saw the same records there as well.
+
+That confirmed that replication was working and data from the master was being copied to the replica.
