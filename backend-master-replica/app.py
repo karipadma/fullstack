@@ -3,18 +3,19 @@ from db import get_master_conn, get_replica_conn
 
 app = Flask(__name__)
 
-
-# ---------------- GET ----------------
+# ---------------- GET (REPLICA) ----------------
 @app.route("/api/employees", methods=["GET"])
 def get_employees():
-    conn = get_master_conn()
+
+    conn = get_replica_conn()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM employees")
     data = cursor.fetchall()
     conn.close()
-    return jsonify(data)
 
-# ---------------- POST ----------------
+    return jsonify({"source": "replica", "data": data})
+
+# ---------------- POST (MASTER) ----------------
 @app.route("/api/employees", methods=["POST"])
 def add_employee():
     data = request.json
@@ -30,7 +31,7 @@ def add_employee():
 
     return jsonify({"msg": "Inserted into MASTER"})
 
-# ---------------- PUT ----------------
+# ---------------- PUT (MASTER) ----------------
 @app.route("/api/employees/<int:id>", methods=["PUT"])
 def update_employee(id):
     data = request.json
@@ -46,7 +47,7 @@ def update_employee(id):
 
     return jsonify({"msg": "Updated in MASTER"})
 
-# ---------------- DELETE ----------------
+# ---------------- DELETE (MASTER) ----------------
 @app.route("/api/employees/<int:id>", methods=["DELETE"])
 def delete_employee(id):
 
@@ -56,7 +57,7 @@ def delete_employee(id):
     conn.commit()
     conn.close()
 
-    return jsonify({"msg": "Deleted from MASTER"})
+    return jsonify({"msg": "Deleted in MASTER"})
 
 
 if __name__ == "__main__":
