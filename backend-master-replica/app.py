@@ -3,20 +3,19 @@ from db import get_master_conn, get_replica_conn
 
 app = Flask(__name__)
 
-# ---------------- GET (REPLICA) ----------------
-@app.route("/employees", methods=["GET"])
-def get_employees():
 
-    conn = get_replica_conn()
+# ---------------- GET ----------------
+@app.route("/api/employees", methods=["GET"])
+def get_employees():
+    conn = get_master_conn()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM employees")
     data = cursor.fetchall()
     conn.close()
+    return jsonify(data)
 
-    return jsonify({"source": "replica", "data": data})
-
-# ---------------- POST (MASTER) ----------------
-@app.route("/employees", methods=["POST"])
+# ---------------- POST ----------------
+@app.route("/api/employees", methods=["POST"])
 def add_employee():
     data = request.json
 
@@ -31,8 +30,8 @@ def add_employee():
 
     return jsonify({"msg": "Inserted into MASTER"})
 
-# ---------------- PUT (MASTER) ----------------
-@app.route("/employees/<int:id>", methods=["PUT"])
+# ---------------- PUT ----------------
+@app.route("/api/employees/<int:id>", methods=["PUT"])
 def update_employee(id):
     data = request.json
 
@@ -47,8 +46,8 @@ def update_employee(id):
 
     return jsonify({"msg": "Updated in MASTER"})
 
-# ---------------- DELETE (MASTER) ----------------
-@app.route("/employees/<int:id>", methods=["DELETE"])
+# ---------------- DELETE ----------------
+@app.route("/api/employees/<int:id>", methods=["DELETE"])
 def delete_employee(id):
 
     conn = get_master_conn()
@@ -57,8 +56,8 @@ def delete_employee(id):
     conn.commit()
     conn.close()
 
-    return jsonify({"msg": "Deleted in MASTER"})
+    return jsonify({"msg": "Deleted from MASTER"})
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
