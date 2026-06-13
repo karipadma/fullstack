@@ -4,7 +4,7 @@ from db import get_master_conn
 app = Flask(__name__)
 
 # ---------------- GET ----------------
-@app.route("/employees", methods=["GET"])
+@app.route("/api/employees", methods=["GET"])
 def get_employees():
     conn = get_master_conn()
     cursor = conn.cursor()
@@ -14,7 +14,7 @@ def get_employees():
     return jsonify(data)
 
 # ---------------- POST ----------------
-@app.route("/employees", methods=["POST"])
+@app.route("/api/employees", methods=["POST"])
 def add_employee():
     data = request.json
 
@@ -30,7 +30,7 @@ def add_employee():
     return jsonify({"msg": "Inserted into MASTER"})
 
 # ---------------- PUT ----------------
-@app.route("/employees/<int:id>", methods=["PUT"])
+@app.route("/api/employees/<int:id>", methods=["PUT"])
 def update_employee(id):
     data = request.json
 
@@ -46,7 +46,7 @@ def update_employee(id):
     return jsonify({"msg": "Updated in MASTER"})
 
 # ---------------- DELETE ----------------
-@app.route("/employees/<int:id>", methods=["DELETE"])
+@app.route("/api/employees/<int:id>", methods=["DELETE"])
 def delete_employee(id):
 
     conn = get_master_conn()
