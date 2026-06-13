@@ -1,0 +1,57 @@
+📘 README 2 — Case 2 (Master + Replica + Nginx)
+# 🚀 Case 2: Master + Replica DB + Nginx Frontend
+
+---
+
+## 📌 Overview
+- GET → Replica DB
+- POST/PUT/DELETE → Master DB
+- Nginx serves frontend
+
+---
+
+## 🧱 Architecture
+
+
+Browser → Nginx → Flask API
+→ READ → Replica DB
+→ WRITE → Master DB
+
+
+---
+
+# 🖥️ 1. Install Dependencies
+
+```bash id="r2b"
+sudo apt update
+sudo apt install python3 python3-pip nginx -y
+🗄️ 2. RDS Setup
+CREATE DATABASE employees;
+
+USE employees;
+
+CREATE TABLE employees (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    role VARCHAR(100)
+);
+🚀 3. Run Backend
+python3 app.py
+🌐 4. Nginx Setup
+/usr/share/nginx/html/index.html
+sudo nano /etc/nginx/sites-available/default
+location /api/ {
+    proxy_pass http://<BACKEND-EC2-IP>:5000/;
+}
+🔐 5. Security Group
+Allow:
+- Port 80 (frontend)
+- Port 5000 (backend)
+🌍 6. Access
+http://<FRONTEND-EC2-IP>
+📊 Flow
+GET → Replica DB
+POST → Master DB
+✔ Case 2 Summary
+Scalable reads
+DB separation

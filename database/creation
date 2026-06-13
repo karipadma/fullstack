@@ -1,0 +1,12 @@
+CREATE DATABASE company	
+
+USE company	
+CREATE TABLE employees (
+    id INT PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+INSERT INTO employees VALUES
+(1,'John'),
+(2,'Mary'),
+(3,'David');

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Case 1 - Master DB</title>
+</head>
+<body>
+    <h1>Employee System (Master DB Only)</h1>
+
+    <button onclick="getEmployees()">Get Employees</button>
+
+    <script>
+        function getEmployees() {
+            fetch("/api/employees")
+            .then(res => res.json())
+            .then(data => console.log(data));
+        }
+    </script>
+</body>
+</html>

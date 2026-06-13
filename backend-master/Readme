@@ -1,0 +1,103 @@
+
+📘 README 1 — Case 1 (Master DB Only + Nginx Frontend)
+# 🚀 Case 1: Master DB Only + Nginx Frontend
+
+## 📌 Overview
+Simple architecture:
+- Nginx serves frontend (HTML)
+- Flask handles APIs
+- MySQL Master handles all operations
+
+---
+
+## 🧱 Architecture
+
+
+Browser → Nginx → index.html → Flask API → Master DB
+
+
+---
+
+# 🖥️ 1. EC2 Setup
+
+```bash id="r1b"
+sudo apt update
+sudo apt install python3 python3-pip nginx -y
+📁 2. Project Setup
+mkdir case1
+cd case1
+
+Create:
+
+app.py
+db.py
+config.py
+requirements.txt
+📦 3. Install dependencies
+pip install -r requirements.txt
+🗄️ 4. MySQL (RDS) Setup
+mysql -h <MASTER-ENDPOINT> -u admin -p
+CREATE DATABASE employees;
+
+USE employees;
+
+CREATE TABLE employees (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100),
+    role VARCHAR(100)
+);
+🚀 5. Run Backend
+python3 app.py
+
+Backend:
+
+http://localhost:5000
+🌐 6. Nginx Frontend Setup
+📄 Path (IMPORTANT FIXED)
+/usr/share/nginx/html/index.html
+Create HTML
+sudo nano /usr/share/nginx/html/index.html
+index.html
+<!DOCTYPE html>
+<html>
+<body>
+<h1>Case 1 - Master DB Only</h1>
+
+<button onclick="getData()">GET Employees</button>
+
+<script>
+function getData() {
+    fetch("/api/employees")
+    .then(res => res.json())
+    .then(data => console.log(data));
+}
+</script>
+
+</body>
+</html>
+Nginx Config
+sudo nano /etc/nginx/sites-available/default
+server {
+    listen 80;
+
+    location / {
+        root /usr/share/nginx/html;
+        index index.html;
+    }
+
+    location /api/ {
+        proxy_pass http://127.0.0.1:5000/;
+    }
+}
+Restart nginx
+sudo systemctl restart nginx
+🌍 Access
+http://<EC2-PUBLIC-IP>
+📊 Flow
+
+Browser → Nginx → Flask → Master DB
+
+✔ Case 1 Summary
+Simple system
+No replica
+No cache
