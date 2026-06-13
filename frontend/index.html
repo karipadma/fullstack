@@ -4,19 +4,58 @@
 
 <h2>Employee System</h2>
 
+<h3>Add Employee</h3>
+
+Name:
+<input type="text" id="name">
+
+Role:
+<input type="text" id="role">
+
+<button onclick="addEmployee()">Add Employee</button>
+
+<hr>
+
 <button onclick="getEmployees()">Get Employees</button>
 
 <pre id="result"></pre>
 
 <script>
+
+function addEmployee() {
+
+    const name = document.getElementById("name").value;
+    const role = document.getElementById("role").value;
+
+    fetch("/api/employees", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name: name,
+            role: role
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        alert("Employee Added Successfully");
+        console.log(data);
+    });
+}
+
 function getEmployees() {
+
     fetch("/api/employees")
     .then(res => res.json())
     .then(data => {
+
         document.getElementById("result").innerHTML =
             JSON.stringify(data, null, 2);
+
     });
 }
+
 </script>
 
 </body>
