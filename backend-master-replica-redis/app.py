@@ -11,7 +11,10 @@ app = Flask(__name__)
 cache = redis.Redis(
     host=Config.REDIS_HOST,
     port=Config.REDIS_PORT,
-    decode_responses=True
+    decode_responses=True,
+    ssl=True,
+    socket_connect_timeout=5,
+    socket_timeout=5
 )
 
 CACHE_KEY = "employees_all"
