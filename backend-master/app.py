@@ -16,18 +16,40 @@ def get_employees():
 # ---------------- POST ----------------
 @app.route("/api/employees", methods=["POST"])
 def add_employee():
+
     data = request.json
 
     conn = get_master_conn()
     cursor = conn.cursor()
+
+    # Check if employee already exists
+    cursor.execute(
+        "SELECT id FROM employees WHERE name=%s AND role=%s",
+        (data["name"], data["role"])
+    )
+
+    existing = cursor.fetchone()
+
+    if existing:
+        conn.close()
+        return jsonify({
+            "msg": "Employee already exists"
+        }), 409
+
+    # Insert only if not exists
     cursor.execute(
         "INSERT INTO employees (name, role) VALUES (%s, %s)",
         (data["name"], data["role"])
     )
+
     conn.commit()
     conn.close()
 
-    return jsonify({"msg": "Inserted into MASTER"})
+    cache.delete(CACHE_KEY)
+
+    return jsonify({
+        "msg": "Inserted in MASTER + cache cleared"
+    })
 
 # ---------------- PUT ----------------
 @app.route("/api/employees/<int:id>", methods=["PUT"])
