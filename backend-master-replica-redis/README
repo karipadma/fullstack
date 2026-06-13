@@ -61,3 +61,31 @@ http://<FRONTEND-EC2-IP>
 GET → Redis → Replica → Response
 POST → Master → Cache clear
 
+#to check data is cmg from redis 
+
+1. Connect to Redis
+redis6-cli -h redis-ifolxr.serverless.use1.cache.amazonaws.com -p 6379 --tls
+
+This connected you directly to your Redis cache.
+
+2. Read the cache key
+GET employees_all
+
+Redis returned:
+
+[
+  {"id":1,"name":"John","role":"Developer"},
+  {"id":2,"name":"Alice","role":"Tester"},
+  ...
+]
+
+That proves:
+
+✅ The key employees_all exists in Redis
+✅ Employee data is stored in Redis
+✅ Flask successfully executed:
+
+cache.set(CACHE_KEY, json.dumps(data), ex=60)
+
+and cached the data.
+
